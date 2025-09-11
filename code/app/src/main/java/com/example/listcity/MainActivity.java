@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
             bottomSheetDialog.show();
+            selectedCityPos = -1;
         });
 
         deleteButton.setOnClickListener(v -> {
