@@ -2,7 +2,6 @@ package com.example.listcity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +16,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     ListView cityList;
@@ -78,6 +76,28 @@ public class MainActivity extends AppCompatActivity {
                 cityService.deleteCity(selectedCityPos);
                 cityAdapter.notifyDataSetChanged();
                 selectedCityPos = -1; // reset after delete
+        });
+
+        editButton.setOnClickListener(v -> {
+            if(selectedCityPos == -1) { return; }
+
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainActivity.this);
+            bottomSheetDialog.setContentView(R.layout.bottom_edit_city_layout);
+
+            EditText cityInput = bottomSheetDialog.findViewById(R.id.cityInput);
+            assert cityInput != null;
+            cityInput.setText(dataList.get(selectedCityPos));
+            Button confirmButton = bottomSheetDialog.findViewById(R.id.confirmEditButton);
+
+            if(confirmButton != null) {
+                confirmButton.setOnClickListener(view -> {
+                    String newCity = cityInput.getText().toString();
+                    cityService.editCity(selectedCityPos, newCity);
+                    cityAdapter.notifyDataSetChanged();
+                    bottomSheetDialog.dismiss();
+                });
+            }
+            bottomSheetDialog.show();
         });
     }
 }

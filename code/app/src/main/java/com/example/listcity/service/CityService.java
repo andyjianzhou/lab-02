@@ -19,15 +19,15 @@ public class CityService implements ICityService {
 
     // Ensure that we delete the first one
     @Override
-    public boolean deleteCity(Integer position) {
+    public void deleteCity(Integer position) {
         Log.d("CityService", "deleteCity called with pos=" + position);
         if (cityList != null && position >= 0 && position < cityList.size()) {
             cityList.remove((int) position);
-            return true;
         }
-        return false;
     }
 
     @Override
-    public boolean editCity(Integer position, String city) { return Boolean.TRUE; }
+    public void editCity(Integer position, String newCity) {
+        this.cityList.set(position, newCity);
+    }
 }
