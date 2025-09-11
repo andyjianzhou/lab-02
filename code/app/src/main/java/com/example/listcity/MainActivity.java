@@ -2,8 +2,10 @@ package com.example.listcity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.listcity.service.CityService;
 import com.example.listcity.service.ICityService;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     ListView cityList;
     ArrayAdapter<String> cityAdapter;
     ArrayList<String> dataList;
-
     private int selectedCityPos = -1;
 
     @Override
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         cityList = findViewById(R.id.city_list);
+        Button addButton = (Button) findViewById(R.id.addButton);
         Button deleteButton = (Button) findViewById(R.id.deleteButton);
         Button editButton = (Button) findViewById(R.id.editButton);
 
@@ -50,13 +53,31 @@ public class MainActivity extends AppCompatActivity {
             // insert city service here
         });
 
+        addButton.setOnClickListener(v -> {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainActivity.this);
+            bottomSheetDialog.setContentView(R.layout.bottom_add_city);
+
+            EditText cityInput = bottomSheetDialog.findViewById(R.id.cityInput);
+            Button confirmButton = bottomSheetDialog.findViewById(R.id.confirmAddButton);
+
+            if(confirmButton != null) {
+                confirmButton.setOnClickListener(view -> {
+                    if(cityInput != null) {
+                        String newCity = cityInput.getText().toString();
+                        cityService.addCity(newCity);
+                        cityAdapter.notifyDataSetChanged();
+                    }
+                    bottomSheetDialog.dismiss();
+                });
+            }
+            bottomSheetDialog.show();
+        });
+
         deleteButton.setOnClickListener(v -> {
-            if (selectedCityPos != -1) {
-//                dataList.remove(selectedCityPos);
+            if (selectedCityPos == -1) { return; }
                 cityService.deleteCity(selectedCityPos);
                 cityAdapter.notifyDataSetChanged();
                 selectedCityPos = -1; // reset after delete
-            }
         });
     }
 }

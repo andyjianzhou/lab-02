@@ -11,7 +11,11 @@ public class CityService implements ICityService {
         this.cityList = dataList;
     }
     @Override
-    public void addCity(String city) {}
+    public void addCity(String city) {
+        if(city != null) {
+            this.cityList.add(city);
+        }
+    }
 
     // Ensure that we delete the first one
     @Override
